@@ -1,0 +1,52 @@
+// ==UserScript==
+// @name        GOBISearchWorksSearch
+// @namespace   Violentmonkey Scripts
+// @match       https://gobi3.com/*
+// @grant       none
+// @version     1.0
+// @author      -
+// @description 6/18/2025, 9:55:49 AM
+// ==/UserScript==
+
+(function() {
+    'use strict';
+
+    function addSearchButtons() {
+        const bookResults = document.querySelectorAll('.itemTable');
+
+        bookResults.forEach(result => {
+            // Skip if we've already added a button to this result
+            if (result.querySelector('.stanford-search-btn')) return;
+
+            const titleElement = result.querySelector('.title-text');
+            const authorElement = result.querySelector('.author-name');
+
+            if (!titleElement) return;
+
+            const title = titleElement.textContent.trim();
+            const author = authorElement ? authorElement.textContent.trim() : '';
+
+            const searchBtn = document.createElement('button');
+            searchBtn.className = 'stanford-search-btn';
+            searchBtn.textContent = 'Search Stanford';
+            searchBtn.style.margin = '5px';
+            searchBtn.style.padding = '3px 8px';
+            searchBtn.style.backgroundColor = '#8C1515'; // Stanford cardinal color
+            searchBtn.style.color = 'white';
+            searchBtn.style.border = 'none';
+            searchBtn.style.borderRadius = '3px';
+            searchBtn.style.cursor = 'pointer';
+
+            searchBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const searchQuery = encodeURIComponent(`${title} ${author}`);
+                window.open(`https://searchworks.stanford.edu/?q=${searchQuery}`, '_blank');
+            });
+
+            result.appendChild(searchBtn);
+        });
+    }
+
+    setTimeout(addSearchButtons, 2000);
+})();
